@@ -17,8 +17,15 @@ const chainMaker = {
   },
 
   removeLink(position) {
+    const errors = new Error("You can't remove incorrect link!");
+
     if (typeof position !== 'number' || !Number.isInteger(position)) {
-      throw new Error('You can\'t remove incorrect link!');
+      try {
+        this.result = this.result.length = 0;
+        throw errors;
+      } catch (error) {
+        return this;
+      }
     }
 
     const arr = [];
@@ -28,8 +35,15 @@ const chainMaker = {
     }
 
     if (!arr.includes(position)) {
-      throw new Error('You can\'t remove incorrect link!');
+      try {
+        this.result = this.result.length = 0;
+        throw errors;
+      } catch (error) {
+        return this;
+      }
     }
+
+
 
     const post = position - 1;
     this.result = this.result.filter((_, index) => index !== post);
@@ -42,10 +56,15 @@ const chainMaker = {
   },
 
   finishChain() {
-    return this.result.map(value => `( ${value} )~~`).join('').slice(0, -2);
+    if (this.result) {
+      return this.result.map(value => `( ${value} )~~`).join('').slice(0, -2);
+    } else {
+      return `${this.result}`;
+    }
   }
 };
 
+// console.log(chainMaker.addLink(1).addLink(2).addLink(3).removeLink(1).finishChain());
 
 module.exports = {
   chainMaker
