@@ -1,4 +1,4 @@
-// const { NotImplementedError } = require('../extensions/index.js');
+const { NotImplementedError } = require('../extensions/index.js');
 
 /**
  * Create a repeating string based on the given parameters
@@ -21,24 +21,40 @@ function repeater(str, options) {
   if (!options.separator) options.separator = '+';
   if (!options.additionSeparator) options.additionSeparator = '|';
   if (typeof value !== 'string') value = `${value}`;
-  if (!options.addition) options.addition = '';
+
+  if (typeof options.addition === 'boolean' || options.addition === null) {
+    options.addition = `${options.addition}`;
+  } else if (!options.addition) {
+    options.addition = '';
+  }
+
   const { repeatTimes, separator, addition, additionRepeatTimes, additionSeparator } = options;
 
-  const arrTimes = [];
+  let result = '';
+  let text2 = '';
+
+  if (additionRepeatTimes) {
+    for (let i = 0; i < additionRepeatTimes; i++) {
+      text2 += `${addition}${additionSeparator}`;
+    }
+  } else {
+    text2 = `${addition}${additionSeparator}`;
+  }
+
+  text2 = text2.slice(0, -additionSeparator.length);
 
   if (repeatTimes) {
     for (let i = 0; i < repeatTimes; i++) {
-      arrTimes.push(`${value}${addition}${separator}`);
+      result += `${value}${text2}${separator}`;
     }
   } else {
-    arrTimes.push(value);
+    result = `${value}${text2}${separator}`;
   }
-  console.log(arrTimes);
+
+  result = result.slice(0, -separator.length);
+
+  return result;
 }
-
-
-
-console.log(repeater('STRING', { repeatTimes: 3, separator: '**', addition: 'PLUS', additionRepeatTimes: 6, additionSeparator: '00' }));
 
 module.exports = {
   repeater
